@@ -44,6 +44,20 @@ const drawerBtnArchive = document.getElementById('drawer-btn-archive');
 const btnTriggerRun = document.getElementById('btn-trigger-run');
 const btnAbortRun = document.getElementById('btn-abort-run');
 
+// Model Comparison Elements
+const compareSelectA = document.getElementById('compare-select-a');
+const compareSelectB = document.getElementById('compare-select-b');
+const compareTriggerBtn = document.getElementById('compare-trigger-btn');
+const comparisonWorkspace = document.getElementById('comparison-workspace');
+
+// Settings Elements
+const settingsSlack = document.getElementById('settings-slack');
+const settingsDrift = document.getElementById('settings-drift');
+const settingsLatency = document.getElementById('settings-latency');
+const settingsKiggleUser = document.getElementById('settings-kaggle-user');
+const settingsApiKey = document.getElementById('settings-api-key');
+const settingsSaveBtn = document.getElementById('settings-save-btn');
+
 // Notification Elements
 const notificationBtn = document.getElementById('notification-btn');
 const toastContainer = document.getElementById('toast-container');
@@ -127,6 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load Activity List
   renderActivityList();
+  
+  // Initialize Model Comparison dropdown selectors
+  populateComparisonDropdowns();
+  if (compareTriggerBtn) compareTriggerBtn.addEventListener('click', runModelComparison);
+  
+  // Save Settings actions
+  if (settingsSaveBtn) settingsSaveBtn.addEventListener('click', saveSystemConfig);
   
   // Initialize Filters
   if (modelFilterStage) modelFilterStage.addEventListener('change', renderModelsTable);
@@ -437,6 +458,7 @@ function promoteModelStage() {
   renderModelsTable();
   renderActivityList();
   openDrawer(model); // Refresh drawer details
+  populateComparisonDropdowns(); // Refresh comparison dropdown lists
 }
 
 // Action: Archive Model Stage
@@ -470,6 +492,7 @@ function archiveModelStage() {
   renderModelsTable();
   renderActivityList();
   openDrawer(model);
+  populateComparisonDropdowns();
 }
 
 // Action: Register Model
@@ -523,6 +546,155 @@ function handleRegisterModel() {
   
   renderModelsTable();
   renderActivityList();
+  populateComparisonDropdowns();
+}
+
+// Populate Comparison dropdown list selectors
+function populateComparisonDropdowns() {
+  if (!compareSelectA || !compareSelectB) return;
+  
+  compareSelectA.innerHTML = '';
+  compareSelectB.innerHTML = '';
+  
+  state.models.forEach((model, index) => {
+    const optA = document.createElement('option');
+    optA.value = model.id;
+    optA.textContent = `${model.name} (${model.version})`;
+    if (index === 0) optA.selected = true;
+    
+    const optB = document.createElement('option');
+    optB.value = model.id;
+    optB.textContent = `${model.name} (${model.version})`;
+    if (index === 1 || (index === 0 && state.models.length === 1)) optB.selected = true;
+    
+    compareSelectA.appendChild(optA);
+    compareSelectB.appendChild(optB);
+  });
+}
+
+// Calculate and render Side-by-Side Model Comparison
+function runModelComparison() {
+  if (!compareSelectA || !compareSelectB || !comparisonWorkspace) return;
+  
+  const idA = compareSelectA.value;
+  const idB = compareSelectB.value;
+  
+  const modelA = state.models.find(m => m.id === idA);
+  const modelB = state.models.find(m => m.id === idB);
+  
+  if (!modelA || !modelB) return;
+  
+  comparisonWorkspace.style.display = 'grid';
+  comparisonWorkspace.innerHTML = `
+    <!-- Column A -->
+    <div class="comparison-column">
+      <div class="comparison-model-title">
+        <span>${modelA.name}</span>
+        <span class="badge ${modelA.stage === 'production' ? 'prod' : modelA.stage === 'staging' ? 'staging' : 'archive'}">${modelA.version} • ${modelA.stage}</span>
+      </div>
+      
+      <div class="comparison-metric-row">
+        <div class="comparison-metric-header">
+          <span>Validation Accuracy</span>
+          <span>${modelA.accuracy}%</span>
+        </div>
+        <div class="comparison-bar-container">
+          <div class="comparison-bar primary" style="width: ${modelA.accuracy}%"></div>
+        </div>
+      </div>
+
+      <div class="comparison-metric-row">
+        <div class="comparison-metric-header">
+          <span>F1 Score Benchmark</span>
+          <span>${modelA.f1}%</span>
+        </div>
+        <div class="comparison-bar-container">
+          <div class="comparison-bar primary" style="width: ${modelA.f1}%"></div>
+        </div>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Framework</span>
+        <span style="font-family: var(--font-mono); font-size: 0.85rem; color: #fff;">${modelA.framework.toUpperCase()}</span>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Inference Cost / 1k</span>
+        <span style="font-family: var(--font-mono); font-size: 0.85rem; color: #fff;">$${modelA.cost.toFixed(4)}</span>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Data Lineage</span>
+        <span style="font-size: 0.85rem; color: #fff;">${modelA.dataset}</span>
+      </div>
+    </div>
+
+    <!-- Column B -->
+    <div class="comparison-column">
+      <div class="comparison-model-title">
+        <span>${modelB.name}</span>
+        <span class="badge ${modelB.stage === 'production' ? 'prod' : modelB.stage === 'staging' ? 'staging' : 'archive'}">${modelB.version} • ${modelB.stage}</span>
+      </div>
+      
+      <div class="comparison-metric-row">
+        <div class="comparison-metric-header">
+          <span>Validation Accuracy</span>
+          <span>${modelB.accuracy}%</span>
+        </div>
+        <div class="comparison-bar-container">
+          <div class="comparison-bar secondary" style="width: ${modelB.accuracy}%"></div>
+        </div>
+      </div>
+
+      <div class="comparison-metric-row">
+        <div class="comparison-metric-header">
+          <span>F1 Score Benchmark</span>
+          <span>${modelB.f1}%</span>
+        </div>
+        <div class="comparison-bar-container">
+          <div class="comparison-bar secondary" style="width: ${modelB.f1}%"></div>
+        </div>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Framework</span>
+        <span style="font-family: var(--font-mono); font-size: 0.85rem; color: #fff;">${modelB.framework.toUpperCase()}</span>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Inference Cost / 1k</span>
+        <span style="font-family: var(--font-mono); font-size: 0.85rem; color: #fff;">$${modelB.cost.toFixed(4)}</span>
+      </div>
+
+      <div class="comparison-metric-row" style="flex-direction: row; justify-content: space-between; padding: 14px 0;">
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Data Lineage</span>
+        <span style="font-size: 0.85rem; color: #fff;">${modelB.dataset}</span>
+      </div>
+    </div>
+  `;
+  
+  showToast("Comparison benchmark calculated.", "success");
+}
+
+// Action: Save System configuration alerts settings
+function saveSystemConfig() {
+  const slackVal = settingsSlack.value;
+  const driftVal = settingsDrift.value;
+  const latencyVal = settingsLatency.value;
+  const userVal = settingsKiggleUser.value;
+  
+  // Alert/log changes
+  state.activities.unshift({
+    id: Date.now(),
+    name: "System Config",
+    type: "Settings Update",
+    status: "success",
+    time: "Just now",
+    meta: `Slack Webhook and thresholds modified. PSI warning: ${driftVal}.`
+  });
+  renderActivityList();
+  
+  showToast(`Settings saved successfully. Alert rules updated!`, "success");
 }
 
 // Toast System

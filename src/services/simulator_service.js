@@ -3,6 +3,7 @@ import { state, showToast, renderModelsTable, renderActivityList } from '../main
 
 let telemetryInterval = null;
 let pipelineInterval = null;
+let requestLogInterval = null;
 
 // Pipeline Training States
 let isTrainingActive = true;
@@ -47,7 +48,10 @@ export function startSimulator() {
     }
   }, 3000);
 
-  // 4. Random Alerts Dispatcher
+  // 4. Start Live API Queries Ticker
+  startApiRequestsSimulator();
+
+  // 5. Random Alerts Dispatcher
   setInterval(() => {
     if (Math.random() > 0.75) {
       triggerRandomAlert();
@@ -55,9 +59,57 @@ export function startSimulator() {
   }, 15000);
 }
 
+// Live API Queries Simulator
+function startApiRequestsSimulator() {
+  const reqBodyEl = document.getElementById('live-requests-table-body');
+  if (!reqBodyEl) return;
+  
+  // Seed initial mock logs
+  for (let i = 0; i < 6; i++) {
+    appendRequestLogRow(reqBodyEl);
+  }
+  
+  // Rolling appends
+  requestLogInterval = setInterval(() => {
+    appendRequestLogRow(reqBodyEl);
+  }, 3000);
+}
+
+function appendRequestLogRow(container) {
+  const isChurn = Math.random() > 0.4;
+  const isSuccess = Math.random() > 0.02; // 98% success
+  const timestamp = new Date().toTimeString().split(' ')[0];
+  
+  const modelName = isChurn ? "Bank-Churn-XGBoost" : "Card-Fraud-IsolationForest";
+  const statusHtml = isSuccess 
+    ? `<span class="badge prod" style="color: var(--success); background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.15)">200 OK</span>`
+    : `<span class="badge archive" style="color: var(--danger); background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.15)">500 ERR</span>`;
+    
+  const payload = isChurn 
+    ? `{"age": ${Math.floor(18 + Math.random() * 60)}, "balance": ${Math.floor(5000 + Math.random() * 80000)}, "score": ${Math.floor(500 + Math.random() * 300)}}`
+    : `{"V1": ${(Math.random() * 2 - 1).toFixed(2)}, "V2": ${(Math.random() * 2 - 1).toFixed(2)}, "amt": ${Math.floor(5 + Math.random() * 1000)}}`;
+    
+  const latency = (12.4 + Math.random() * 12).toFixed(1) + " ms";
+  
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><code>${timestamp}</code></td>
+    <td class="model-name">${modelName}</td>
+    <td>${statusHtml}</td>
+    <td><code style="font-size: 0.75rem; color: var(--text-secondary);">${payload}</code></td>
+    <td style="font-family: var(--font-mono); color: var(--text-main); font-weight: 500;">${latency}</td>
+  `;
+  
+  container.insertBefore(tr, container.firstChild);
+  
+  // Cap requests log rows at 12
+  if (container.children.length > 12) {
+    container.removeChild(container.lastChild);
+  }
+}
+
 // Telemetry Updates
 function updateDynamicMetrics() {
-  // Update numerical card nodes
   const latencyEl = document.getElementById('metric-latency');
   const gpuEl = document.getElementById('metric-gpu-load');
   const ipsEl = document.getElementById('metric-ips');
@@ -81,7 +133,7 @@ function updateDynamicMetrics() {
     data2.shift();
     data2.push(parseFloat(currentLatency));
     
-    charts.overview.update('none'); // Update smoothly without reset animations
+    charts.overview.update('none');
   }
 
   // 2. Update Telemetry Charts (GPU & Load)
@@ -128,7 +180,6 @@ function runTrainingStep() {
     appendLogLine(`Boosting Round ${trainingEpoch}/${totalEpochs} - train-logloss: ${currentLoss} - val-logloss: ${(currentLoss * 1.12).toFixed(4)} - auc: ${(88 + (trainingEpoch * 0.22)).toFixed(2)}%`, 'success');
   } 
   else if (trainingEpoch === totalEpochs) {
-    // Transition to Evaluation Node
     trainingEpoch++; 
     
     if (nodeTraining) {
@@ -152,7 +203,6 @@ function runTrainingStep() {
     appendLogLine("Training complete. Starting Model Evaluation splits...", "info");
     lucide.createIcons();
     
-    // Schedule deployment step
     setTimeout(() => {
       if (!isTrainingActive) return;
       
@@ -179,7 +229,6 @@ function runTrainingStep() {
       appendLogLine("Uploading booster state variables to model registry store...", "info");
       lucide.createIcons();
       
-      // Schedule completion
       setTimeout(() => {
         if (!isTrainingActive) return;
         
@@ -200,7 +249,6 @@ function runTrainingStep() {
         appendLogLine("Successfully deployed Bank-Churn-XGBoost [v2.4.1] model artifact to production cluster.", "success");
         appendLogLine("Pipeline finished. Status: SUCCESS.", "success");
         
-        // Update models state
         const targetModel = state.models.find(m => m.id === "m-001");
         if (targetModel) {
           targetModel.accuracy = 94.2;
@@ -367,7 +415,7 @@ function resetPipelineNodes() {
   lucide.createIcons();
 }
 
-// Random alert events
+// Random alerts dispatch
 function triggerRandomAlert() {
   const alerts = [
     { msg: "API Gateway throughput increased by 14%", type: "info" },
