@@ -52,6 +52,57 @@ const toastContainer = document.getElementById('toast-container');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
 
+// Landing Page Code Templates
+const codeTemplates = {
+  python: {
+    filename: "deploy_churn_predictor.py",
+    html: `<span style="color: #f43f5e;">import</span> nexus
+
+<span style="color: #64748b;"># Load the Kaggle Bank Customer Churn model</span>
+model = nexus.models.load(<span style="color: #10b981;">"Bank-Churn-XGBoost:v2.4.1"</span>)
+
+<span style="color: #64748b;"># Deploy to production cluster with drift guard enabled</span>
+deploy = model.deploy(
+    target=<span style="color: #10b981;">"prod-cluster-us-east"</span>,
+    drift_detection=<span style="color: #06b6d4;">True</span>,
+    drift_threshold=<span style="color: #fbbf24;">0.20</span>
+)
+print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</span>)`
+  },
+  curl: {
+    filename: "deploy_curl_request.sh",
+    html: `<span style="color: #818cf8;">curl</span> -X POST https://api.nexus.ml/v1/deploy \\
+  -H <span style="color: #10b981;">"Authorization: Bearer $NEXUS_API_KEY"</span> \\
+  -H <span style="color: #10b981;">"Content-Type: application/json"</span> \\
+  -d <span style="color: #06b6d4;">'{
+    "model_id": "m-001",
+    "version": "v2.4.1",
+    "target_cluster": "prod-cluster-us-east",
+    "drift_guard": {
+      "metric": "PSI",
+      "threshold": 0.20
+    }
+  }'</span>`
+  },
+  javascript: {
+    filename: "deploy_recs.js",
+    html: `<span style="color: #f43f5e;">import</span> { Nexus } <span style="color: #f43f5e;">from</span> <span style="color: #10b981;">'@nexus-ml/sdk'</span>;
+
+<span style="color: #f43f5e;">const</span> nexus = <span style="color: #f43f5e;">new</span> <span style="color: #818cf8;">Nexus</span>({ apiKey: process.env.NEXUS_API_KEY });
+
+<span style="color: #64748b;">// Deploy the XGBoost churn model</span>
+<span style="color: #f43f5e;">const</span> deployment = <span style="color: #f43f5e;">await</span> nexus.deployments.create({
+  modelId: <span style="color: #10b981;">'m-001'</span>,
+  version: <span style="color: #10b981;">'v2.4.1'</span>,
+  driftGuard: {
+    metric: <span style="color: #10b981;">'PSI'</span>,
+    threshold: <span style="color: #fbbf24;">0.20</span>
+  }
+});
+console.log(<span style="color: #10b981;">\`Endpoint online: \${deployment.url}\`</span>);`
+  }
+};
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
   // Init lucide icons
@@ -65,6 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Transition actions: Dashboard -> Landing Page
   if (btnReturnLanding) btnReturnLanding.addEventListener('click', returnToLanding);
   
+  // Code Tabs Switcher on Landing Page
+  initCodeTabs();
+
   // Tab Management
   initTabs();
   
@@ -119,6 +173,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Code Tabs Switcher
+function initCodeTabs() {
+  const tabButtons = document.querySelectorAll('.code-tab-btn');
+  const filenameEl = document.getElementById('editor-filename');
+  const codeBodyEl = document.getElementById('editor-code');
+  
+  if (tabButtons.length === 0 || !filenameEl || !codeBodyEl) return;
+  
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.getAttribute('data-lang');
+      
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      if (codeTemplates[lang]) {
+        filenameEl.textContent = codeTemplates[lang].filename;
+        codeBodyEl.innerHTML = codeTemplates[lang].html;
+      }
+    });
+  });
+}
 
 // Launch Console from Landing Page
 function launchConsole(targetTab = 'overview') {

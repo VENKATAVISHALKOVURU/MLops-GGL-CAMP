@@ -20,7 +20,6 @@
   <div class="ambient-glow-container">
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
-    <div class="glow-orb orb-3"></div>
   </div>
 
   <!-- ---------------------------------------------------- -->
@@ -30,14 +29,14 @@
     <nav class="landing-nav">
       <div class="nav-brand">
         <div class="nav-brand-icon">
-          <i data-lucide="cpu" style="width: 20px; height: 20px; color: white;"></i>
+          <i data-lucide="cpu" style="width: 18px; height: 18px; color: white;"></i>
         </div>
         <span class="nav-brand-name">MLOps Nexus</span>
       </div>
       <div class="nav-links">
         <a href="#features" class="landing-nav-link">Features</a>
-        <a href="#docs" class="landing-nav-link">Documentation</a>
-        <a href="#github" class="landing-nav-link">Enterprise Hub</a>
+        <a href="#code" class="landing-nav-link">Developer API</a>
+        <a href="#security" class="landing-nav-link">Enterprise Hub</a>
       </div>
       <div>
         <button class="btn-primary" id="btn-nav-launch" style="padding: 8px 18px;">
@@ -47,55 +46,239 @@
       </div>
     </nav>
 
-    <main class="hero">
-      <div class="badge-tag">
-        <div class="badge-tag-dot"></div>
-        <span>Autonomous Operations Center</span>
-      </div>
-      <h1 class="hero-title">
-        The Next-Gen Control Center for <span>Enterprise AI</span>
-      </h1>
-      <p class="hero-subtitle">
-        Deploy, inspect, and monitor machine learning lifecycles autonomously. Seamlessly track drift indices, pipeline runs, and cluster telemetry through a unified command interface.
-      </p>
-      
-      <div class="cta-group">
-        <button class="btn-warp" id="btn-hero-launch">
-          <span>Launch Control Console</span>
-          <i data-lucide="terminal" style="width: 18px; height: 18px;"></i>
-        </button>
-        <button class="btn-secondary" id="btn-landing-explore" style="padding: 16px 36px; border-radius: 12px; font-weight: 600;">
-          <span>Explore Registry</span>
-        </button>
-      </div>
+    <!-- Hero Section -->
+    <section class="grid-section">
+      <main class="hero">
+        <div class="badge-tag">
+          <div class="badge-tag-dot"></div>
+          <span>Autonomous Operations Center</span>
+        </div>
+        <h1 class="hero-title">
+          The Developer Platform for <span>Mission-Critical APIs</span>
+        </h1>
+        <p class="hero-subtitle">
+          Deploy, inspect, and monitor machine learning lifecycles at scale. Seamlessly track drift indices, pipeline runs, and cluster telemetry through a unified command interface.
+        </p>
+        
+        <div class="cta-group">
+          <button class="btn-warp" id="btn-hero-launch">
+            <span>Launch Control Console</span>
+            <i data-lucide="terminal" style="width: 16px; height: 16px;"></i>
+          </button>
+          <button class="btn-secondary" id="btn-landing-explore" style="padding: 16px 36px; border-radius: 8px; font-weight: 600;">
+            <span>Explore Registry</span>
+          </button>
+        </div>
 
-      <!-- Feature Highlight Grid -->
-      <section class="features-grid" id="features">
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i data-lucide="git-branch" style="width: 24px; height: 24px;"></i>
-          </div>
-          <h3>Autonomous Pipelines</h3>
-          <p>Orchestrate distributed retraining sequences. Monitor dataset ingestions, prep runs, model weights, and automatic rollouts.</p>
+        <!-- Hero Neural SVG Graphic -->
+        <div class="hero-visualizer dot-grid-bg">
+          <svg width="100%" height="100%" viewBox="0 0 960 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0;">
+            <!-- Waveform grids -->
+            <path d="M 50 140 Q 200 40 400 140 T 750 140 T 910 140" stroke="rgba(99, 102, 241, 0.25)" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <path d="M 50 140 Q 250 240 450 140 T 800 140 T 910 140" stroke="rgba(6, 182, 212, 0.25)" stroke-width="1.5" stroke-dasharray="10 5"/>
+            <!-- Center data node connections -->
+            <line x1="280" y1="110" x2="380" y2="70" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="380" y1="70" x2="480" y2="140" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="480" y1="140" x2="580" y2="70" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="580" y1="70" x2="680" y2="170" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <!-- Pulsing dots -->
+            <circle cx="280" cy="110" r="4" fill="#6366f1" />
+            <circle cx="380" cy="70" r="5" fill="#06b6d4" />
+            <circle cx="480" cy="140" r="6" fill="#10b981" />
+            <circle cx="580" cy="70" r="4" fill="#818cf8" />
+            <circle cx="680" cy="170" r="5" fill="#6366f1" />
+            <!-- Floating label indicators -->
+            <rect x="350" y="35" width="60" height="20" rx="4" fill="rgba(6, 182, 212, 0.1)" stroke="rgba(6, 182, 212, 0.3)" stroke-width="1"/>
+            <text x="358" y="48" fill="#06b6d4" font-family="monospace" font-size="8">PSI: 0.08</text>
+            
+            <rect x="445" y="165" width="70" height="20" rx="4" fill="rgba(16, 185, 129, 0.1)" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1"/>
+            <text x="453" y="178" fill="#10b981" font-family="monospace" font-size="8">Acc: 98.1%</text>
+            
+            <rect x="655" y="195" width="50" height="20" rx="4" fill="rgba(99, 102, 241, 0.1)" stroke="rgba(99, 102, 241, 0.3)" stroke-width="1"/>
+            <text x="663" y="208" fill="#818cf8" font-family="monospace" font-size="8">Active</text>
+          </svg>
+        </div>
+      </main>
+    </section>
+
+    <!-- Code Interactive Console Tab Section -->
+    <section class="grid-section" id="code">
+      <div class="code-interactive-section">
+        <div class="code-tabs">
+          <button class="code-tab-btn active" data-lang="python">deploy.py</button>
+          <button class="code-tab-btn" data-lang="curl">curl_request.sh</button>
+          <button class="code-tab-btn" data-lang="javascript">deploy.js</button>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i data-lucide="activity" style="width: 24px; height: 24px;"></i>
+        <div class="code-editor-mock">
+          <div class="editor-header">
+            <div class="editor-dots">
+              <div class="editor-dot r"></div>
+              <div class="editor-dot y"></div>
+              <div class="editor-dot g"></div>
+            </div>
+            <div class="editor-title" id="editor-filename">deploy_churn_predictor.py</div>
+            <i data-lucide="copy" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
           </div>
-          <h3>Telemetry & Metrics</h3>
-          <p>Real-time analytics on inference hits/min, GPU memory load, cluster temperatures, and API gateway response latency.</p>
+          <pre class="editor-body" id="editor-code">
+<span style="color: #f43f5e;">import</span> nexus
+
+<span style="color: #64748b;"># Load the Kaggle Bank Customer Churn model</span>
+model = nexus.models.load(<span style="color: #10b981;">"Bank-Churn-XGBoost:v2.4.1"</span>)
+
+<span style="color: #64748b;"># Deploy to production cluster with drift guard enabled</span>
+deploy = model.deploy(
+    target=<span style="color: #10b981;">"prod-cluster-us-east"</span>,
+    drift_detection=<span style="color: #06b6d4;">True</span>,
+    drift_threshold=<span style="color: #fbbf24;">0.20</span>
+)
+print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</span>)</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Split Feature Showcase: Data Drift -->
+    <section class="grid-section" id="features">
+      <div class="split-showcase">
+        <div class="showcase-left">
+          <div class="badge-tag" style="background: rgba(236, 72, 153, 0.06); border-color: rgba(236, 72, 153, 0.2); color: #ec4899;">
+            <span>Drift Monitoring</span>
+          </div>
+          <h2 class="showcase-title">Zero-Configuration Drift Safeguards</h2>
+          <p class="showcase-desc">
+            Automatically track feature profile changes. MLOps Nexus monitors Population Stability Index (PSI) benchmarks across all inference attributes to proactively alert and mitigate.
+          </p>
+          <div class="showcase-specs">
+            <div class="spec-item">
+              <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+              <span>Interactive PSI drift tracking templates</span>
+            </div>
+            <div class="spec-item">
+              <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+              <span>High drift warning triggers (PSI &gt; 0.20)</span>
+            </div>
+            <div class="spec-item">
+              <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+              <span>Automated training pipelines activation</span>
+            </div>
+          </div>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i data-lucide="shield-alert" style="width: 24px; height: 24px;"></i>
+        <div class="showcase-right dot-grid-bg">
+          <div class="showcase-mock-embed">
+            <!-- Simulated Drift Plot Graphic -->
+            <svg width="100%" height="100%" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="40" width="10" height="150" fill="rgba(255,255,255,0.04)" rx="2"/>
+              <rect x="20" y="80" width="10" height="110" fill="#ec4899" rx="2"/>
+              <text x="18" y="205" fill="#64748b" font-family="monospace" font-size="8">Age</text>
+              
+              <rect x="70" y="40" width="10" height="150" fill="rgba(255,255,255,0.04)" rx="2"/>
+              <rect x="70" y="100" width="10" height="90" fill="#ec4899" rx="2"/>
+              <text x="63" y="205" fill="#64748b" font-family="monospace" font-size="8">Balance</text>
+              
+              <rect x="120" y="40" width="10" height="150" fill="rgba(255,255,255,0.04)" rx="2"/>
+              <rect x="120" y="160" width="10" height="30" fill="rgba(255,255,255,0.15)" rx="2"/>
+              <text x="110" y="205" fill="#64748b" font-family="monospace" font-size="8">Credit</text>
+              
+              <!-- Warn line -->
+              <line x1="15" y1="90" x2="250" y2="90" stroke="rgba(239, 68, 68, 0.4)" stroke-dasharray="4 2"/>
+              <text x="255" y="93" fill="#ef4444" font-family="monospace" font-size="8">Limit (0.20)</text>
+            </svg>
           </div>
-          <h3>Data Drift Guard</h3>
-          <p>Automatic alerts on feature attribution shifts using Population Stability Index (PSI). Retrain pipelines on warning drift.</p>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+
+    <!-- Split Feature Showcase: Autonomous Pipelines -->
+    <section class="grid-section">
+      <div class="split-showcase reverse">
+        <div class="showcase-right dot-grid-bg">
+          <div class="showcase-mock-embed">
+            <!-- Simulated pipelines nodes SVG -->
+            <svg width="100%" height="100%" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="50" y1="125" x2="300" y2="125" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>
+              <!-- Node 1 -->
+              <circle cx="50" cy="125" r="16" fill="rgba(16, 185, 129, 0.1)" stroke="#10b981" stroke-width="1.5"/>
+              <text x="45" y="129" fill="#10b981" font-family="monospace" font-size="12">✓</text>
+              <!-- Node 2 -->
+              <circle cx="150" cy="125" r="16" fill="rgba(99, 102, 241, 0.1)" stroke="#6366f1" stroke-width="1.5"/>
+              <circle cx="150" cy="125" r="8" fill="#6366f1"/>
+              <!-- Node 3 -->
+              <circle cx="250" cy="125" r="16" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+              
+              <text x="28" y="160" fill="#64748b" font-family="monospace" font-size="8">Ingestion</text>
+              <text x="132" y="160" fill="#818cf8" font-family="monospace" font-size="8">Training</text>
+              <text x="232" y="160" fill="#64748b" font-family="monospace" font-size="8">Evaluation</text>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="showcase-left">
+          <div class="badge-tag" style="background: rgba(99, 102, 241, 0.06); border-color: rgba(99, 102, 241, 0.2); color: #818cf8;">
+            <span>Training Pipelines</span>
+          </div>
+          <h2 class="showcase-title">Distributed Training Reductions</h2>
+          <p class="showcase-desc">
+            Orchestrate continuous optimization paths. Train and update hyperparameters over clusters dynamically when alerts trigger, with automatic rollbacks.
+          </p>
+          <div class="showcase-specs">
+            <div class="spec-item">
+              <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+              <span>One-click training execution loops</span>
+            </div>
+            <div class="spec-item">
+              <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+              <span>Real-time loss metrics console streams</span>
+            </div>
+            <div class="spec-item">
+              <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+              <span>Model registry promotions and locks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- High-Contrast Segment section -->
+    <section class="contrast-section" id="security">
+      <div class="contrast-container">
+        <div class="contrast-badge">Enterprise Standards</div>
+        <h2 class="contrast-title">Infrastructure Engineered for Critical Deployments</h2>
+        
+        <div class="contrast-grid">
+          <div class="contrast-card">
+            <i data-lucide="server" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <h3>High-Performance Edge</h3>
+            <p>Ensure sub-20ms inference response times globally. Model outputs are routed via low-latency server networks.</p>
+          </div>
+          
+          <div class="contrast-card">
+            <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <h3>Zero-Trust Model Registry</h3>
+            <p>Implement secure artifact locks. Restrict staging transitions and enforce code authorizations using RBAC policies.</p>
+          </div>
+          
+          <div class="contrast-card">
+            <i data-lucide="gauge" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <h3>Continuous Telemetry</h3>
+            <p>Monitor cluster CPU limits, GPU temperature loads, and memory pools through unified corporate streams.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+      <div class="footer-left">
+        <i data-lucide="cpu" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+        <span>© 2026 MLOps Nexus Inc. All rights reserved.</span>
+      </div>
+      <div class="footer-nav">
+        <a href="#features">Features</a>
+        <a href="#code">Developer API</a>
+        <a href="#security">Enterprise Hub</a>
+      </div>
+    </footer>
   </div>
 
   <!-- ---------------------------------------------------- -->
