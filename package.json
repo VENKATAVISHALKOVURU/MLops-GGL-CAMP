@@ -1,0 +1,23 @@
+{
+  "name": "mlops-nexus-console",
+  "version": "1.0.0",
+  "description": "Enterprise Machine Learning Operations Control Center and Landing Page, integrating real-world Kaggle datasets and telemetry analytics.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "npx -y serve -l 3000",
+    "serve": "npx -y serve -l 3000"
+  },
+  "keywords": [
+    "mlops",
+    "dashboard",
+    "telemetry",
+    "data-drift",
+    "kaggle",
+    "machine-learning"
+  ],
+  "author": "Sarah Connor",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
