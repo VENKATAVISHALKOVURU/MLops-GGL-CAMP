@@ -217,13 +217,15 @@ input, select {
   z-index: 11;
 }
 
-.nav-brand {
+/* Unified Branding Component */
+.brand {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
 }
 
-.nav-brand-icon {
+.brand-icon {
   width: 32px;
   height: 32px;
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
@@ -231,14 +233,31 @@ input, select {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  box-shadow: var(--glow-primary);
+  flex-shrink: 0;
 }
 
-.nav-brand-name {
+.brand-icon i, .brand-icon svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+  display: block;
+}
+
+.brand-name {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #fff;
+  background: linear-gradient(to right, #ffffff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+}
+
+.brand--sidebar .brand-name {
+  font-size: 1.15rem;
 }
 
 .nav-links {
@@ -1217,31 +1236,7 @@ input, select {
 
 .sidebar-brand {
   padding: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
   border-bottom: 1px solid var(--border-color);
-}
-
-.brand-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow: var(--glow-primary);
-}
-
-.brand-name {
-  font-size: 1.15rem;
-  font-weight: 800;
-  font-family: var(--font-display);
-  background: linear-gradient(to right, #ffffff, #cbd5e1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .sidebar-nav {
