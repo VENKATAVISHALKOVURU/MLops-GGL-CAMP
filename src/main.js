@@ -1,9 +1,14 @@
 import { state } from './data/models_state.js';
 import { initCharts, updateDrawerChart, renderDriftCharts, renderTelemetryCharts } from './services/charts_service.js';
 import { startSimulator, stopTrainingRun, startTrainingRun } from './services/simulator_service.js';
+import { initFirebase, signIn, signUp, logout, checkAuthState, getSavedFirebaseConfig, saveFirebaseConfig } from './services/auth_service.js';
+import { getUserTier, isFeatureAllowed, upgradeUserTier, TIER_DETAILS, TIERS } from './services/subscription_service.js';
 
 // Export state for other services
 export { state };
+
+let currentUser = null;
+let currentGatingTarget = null; // Stores feature context that triggered the gating lock
 
 // UI Containers
 const landingPage = document.getElementById('landing-page');
@@ -144,7 +149,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize Model Comparison dropdown selectors
   populateComparisonDropdowns();
-  if (compareTriggerBtn) compareTriggerBtn.addEventListener('click', runModelComparison);
+  
+  // Gated Model Comparison
+  if (compareTriggerBtn) {
+    compareTriggerBtn.addEventListener('click', () => {
+      const tier = getUserTier(currentUser);
+      if (!isFeatureAllowed('model_comparison', tier)) {
+        showGatingLock('model_comparison');
+      } else {
+        runModelComparison();
+      }
+    });
+  }
   
   // Save Settings actions
   if (settingsSaveBtn) settingsSaveBtn.addEventListener('click', saveSystemConfig);
@@ -163,18 +179,28 @@ document.addEventListener('DOMContentLoaded', () => {
   if (drawerBtnPromote) drawerBtnPromote.addEventListener('click', promoteModelStage);
   if (drawerBtnArchive) drawerBtnArchive.addEventListener('click', archiveModelStage);
   
-  // Pipeline Trigger Actions
+  // Gated Pipeline Trigger Actions
   if (btnTriggerRun) {
     btnTriggerRun.addEventListener('click', () => {
-      startTrainingRun();
-      showToast("Training Pipeline Triggered", "info");
+      const tier = getUserTier(currentUser);
+      if (!isFeatureAllowed('trigger_pipeline', tier)) {
+        showGatingLock('trigger_pipeline');
+      } else {
+        startTrainingRun();
+        showToast("Training Pipeline Triggered", "info");
+      }
     });
   }
   
   if (btnAbortRun) {
     btnAbortRun.addEventListener('click', () => {
-      stopTrainingRun();
-      showToast("Training Pipeline Terminated by User", "error");
+      const tier = getUserTier(currentUser);
+      if (!isFeatureAllowed('trigger_pipeline', tier)) {
+        showGatingLock('trigger_pipeline');
+      } else {
+        stopTrainingRun();
+        showToast("Training Pipeline Terminated by User", "error");
+      }
     });
   }
   
@@ -193,6 +219,83 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.toggle('active');
     });
   }
+
+  // Auth Button Wiring
+  const authNavBtn = document.getElementById('btn-nav-auth');
+  if (authNavBtn) {
+    authNavBtn.addEventListener('click', () => {
+      if (currentUser) {
+        logout().then(() => showToast("Logged out successfully.", "info"));
+      } else {
+        openAuthModal();
+      }
+    });
+  }
+
+  // Auth Modal internal actions
+  const authClose = document.getElementById('auth-close-btn');
+  if (authClose) authClose.addEventListener('click', closeAuthModal);
+  
+  const linkToSignup = document.getElementById('link-to-signup');
+  const linkToSignin = document.getElementById('link-to-signin');
+  if (linkToSignup) {
+    linkToSignup.addEventListener('click', () => {
+      document.getElementById('auth-view-signin').style.display = 'none';
+      document.getElementById('auth-view-signup').style.display = 'block';
+    });
+  }
+  if (linkToSignin) {
+    linkToSignin.addEventListener('click', () => {
+      document.getElementById('auth-view-signup').style.display = 'none';
+      document.getElementById('auth-view-signin').style.display = 'block';
+    });
+  }
+
+  // Auth Submit Handlers
+  const btnSigninSubmit = document.getElementById('btn-signin-submit');
+  if (btnSigninSubmit) btnSigninSubmit.addEventListener('click', handleSignin);
+  
+  const btnSignupSubmit = document.getElementById('btn-signup-submit');
+  if (btnSignupSubmit) btnSignupSubmit.addEventListener('click', handleSignup);
+
+  // Pricing Buttons Wiring
+  const pricingBtns = document.querySelectorAll('.btn-pricing-select');
+  pricingBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTier = btn.getAttribute('data-tier');
+      handlePricingSelect(targetTier);
+    });
+  });
+
+  // Gating Modal Buttons Wiring
+  const gatingClose = document.getElementById('gating-close-btn');
+  if (gatingClose) gatingClose.addEventListener('click', closeGatingModal);
+  const gatingCancel = document.getElementById('gating-btn-cancel');
+  if (gatingCancel) gatingCancel.addEventListener('click', closeGatingModal);
+  const gatingUpgrade = document.getElementById('gating-btn-upgrade');
+  if (gatingUpgrade) gatingUpgrade.addEventListener('click', handleSimulateUpgrade);
+
+  // Load Saved Firebase Config inputs
+  const fbConfig = getSavedFirebaseConfig();
+  if (fbConfig) {
+    const settingsFbApiKey = document.getElementById('settings-fb-api-key');
+    const settingsFbAuthDomain = document.getElementById('settings-fb-auth-domain');
+    const settingsFbProjectId = document.getElementById('settings-fb-project-id');
+    
+    if (settingsFbApiKey) settingsFbApiKey.value = fbConfig.apiKey || "";
+    if (settingsFbAuthDomain) settingsFbAuthDomain.value = fbConfig.authDomain || "";
+    if (settingsFbProjectId) settingsFbProjectId.value = fbConfig.projectId || "";
+  }
+
+  // Initialize Firebase Auth Engine
+  initFirebase().then(() => {
+    checkAuthState(onUserChanged);
+  });
+  
+  // Listen for custom tier change events
+  window.addEventListener('nexus-tier-changed', (e) => {
+    onUserChanged(e.detail.user);
+  });
 });
 
 // Code Tabs Switcher
@@ -683,6 +786,31 @@ function saveSystemConfig() {
   const latencyVal = settingsLatency.value;
   const userVal = settingsKiggleUser.value;
   
+  // Gated slack webhook settings verification
+  const tier = getUserTier(currentUser);
+  if (slackVal !== "https://example.com/slack-webhook-placeholder" && !isFeatureAllowed('alert_webhooks', tier)) {
+    showGatingLock('alert_webhooks');
+    return;
+  }
+
+  // Get Firebase configuration inputs
+  const settingsFbApiKey = document.getElementById('settings-fb-api-key');
+  const settingsFbAuthDomain = document.getElementById('settings-fb-auth-domain');
+  const settingsFbProjectId = document.getElementById('settings-fb-project-id');
+  
+  if (settingsFbApiKey && settingsFbAuthDomain && settingsFbProjectId) {
+    const apiKey = settingsFbApiKey.value.trim();
+    const authDomain = settingsFbAuthDomain.value.trim();
+    const projectId = settingsFbProjectId.value.trim();
+    
+    if (apiKey && authDomain && projectId) {
+      saveFirebaseConfig({ apiKey, authDomain, projectId });
+      showToast("Firebase Config saved. Page reload required to connect.", "info");
+    } else {
+      saveFirebaseConfig(null);
+    }
+  }
+
   // Alert/log changes
   state.activities.unshift({
     id: Date.now(),
@@ -695,6 +823,201 @@ function saveSystemConfig() {
   renderActivityList();
   
   showToast(`Settings saved successfully. Alert rules updated!`, "success");
+}
+
+// --- Auth and Gating Helper Actions ---
+function openAuthModal() {
+  const overlay = document.getElementById('auth-overlay');
+  if (overlay) {
+    overlay.classList.add('active');
+    document.getElementById('auth-view-signin').style.display = 'block';
+    document.getElementById('auth-view-signup').style.display = 'none';
+    clearAuthErrors();
+  }
+}
+
+function closeAuthModal() {
+  const overlay = document.getElementById('auth-overlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+function clearAuthErrors() {
+  const errIn = document.getElementById('auth-error-signin');
+  const errUp = document.getElementById('auth-error-signup');
+  if (errIn) { errIn.style.display = 'none'; errIn.textContent = ''; }
+  if (errUp) { errUp.style.display = 'none'; errUp.textContent = ''; }
+}
+
+function handleSignin() {
+  const email = document.getElementById('signin-email').value.trim();
+  const password = document.getElementById('signin-password').value.trim();
+  const errorEl = document.getElementById('auth-error-signin');
+  
+  if (!email || !password) {
+    errorEl.textContent = "Please fill in all inputs.";
+    errorEl.style.display = 'block';
+    return;
+  }
+  
+  signIn(email, password)
+    .then((user) => {
+      closeAuthModal();
+      showToast(`Welcome back, ${user.displayName}!`, "success");
+      launchConsole('overview');
+    })
+    .catch((err) => {
+      errorEl.textContent = getAuthErrorMessage(err.message);
+      errorEl.style.display = 'block';
+    });
+}
+
+function handleSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value.trim();
+  const errorEl = document.getElementById('auth-error-signup');
+  
+  if (!name || !email || !password) {
+    errorEl.textContent = "Please fill in all inputs.";
+    errorEl.style.display = 'block';
+    return;
+  }
+  
+  signUp(email, password, name)
+    .then((user) => {
+      closeAuthModal();
+      showToast(`Account created. Welcome ${user.displayName}!`, "success");
+      launchConsole('overview');
+    })
+    .catch((err) => {
+      errorEl.textContent = getAuthErrorMessage(err.message);
+      errorEl.style.display = 'block';
+    });
+}
+
+function getAuthErrorMessage(msg) {
+  if (msg.includes('email-already-in-use')) return "This email is already in use.";
+  if (msg.includes('user-not-found') || msg.includes('wrong-password')) return "Invalid email or password.";
+  if (msg.includes('weak-password')) return "Password is too weak (min 6 characters).";
+  return "Authentication failed. Error: " + msg;
+}
+
+function onUserChanged(user) {
+  currentUser = user;
+  
+  const authNavBtn = document.getElementById('btn-nav-auth');
+  const userNameEl = document.querySelector('.user-name');
+  const userRoleEl = document.querySelector('.user-role');
+  
+  const tier = getUserTier(user);
+  
+  if (user) {
+    if (authNavBtn) authNavBtn.innerHTML = '<span>Sign Out</span>';
+    if (userNameEl) {
+      userNameEl.innerHTML = `${user.displayName} <span class="user-tier-badge ${tier}">${tier}</span>`;
+    }
+    if (userRoleEl) userRoleEl.textContent = user.email;
+    syncPricingUI(tier);
+  } else {
+    if (authNavBtn) authNavBtn.innerHTML = '<span>Sign In</span>';
+    if (userNameEl) {
+      userNameEl.innerHTML = `Sarah Connor <span class="user-tier-badge free">free</span>`;
+    }
+    if (userRoleEl) userRoleEl.textContent = 'sarah.connor@mlopsnexus.com';
+    syncPricingUI('free');
+  }
+}
+
+function syncPricingUI(activeTier) {
+  const tiers = ['free', 'pro', 'enterprise'];
+  tiers.forEach(t => {
+    const card = document.getElementById(`pricing-card-${t}`);
+    const btn = card?.querySelector('.btn-pricing-select');
+    if (!btn) return;
+    
+    if (t === activeTier) {
+      btn.textContent = 'Active Plan';
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.pointerEvents = 'none';
+      if (card) card.style.borderColor = 'var(--success)';
+    } else {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+      if (card) {
+        if (t === 'pro') card.style.borderColor = 'var(--accent-primary)';
+        else card.style.borderColor = 'var(--border-color)';
+      }
+      
+      if (t === 'free') btn.textContent = 'Downgrade Plan';
+      else if (t === 'pro') btn.textContent = 'Upgrade to Pro';
+      else btn.textContent = 'Upgrade to Enterprise';
+    }
+  });
+}
+
+function handlePricingSelect(targetTier) {
+  if (!currentUser) {
+    openAuthModal();
+    showToast("Please sign in or register to choose a plan.", "warn");
+    return;
+  }
+  
+  const oldTier = getUserTier(currentUser);
+  upgradeUserTier(currentUser, targetTier);
+  showToast(`Successfully changed plan to ${TIER_DETAILS[targetTier].name}!`, "success");
+  launchConsole('overview');
+}
+
+function showGatingLock(feature) {
+  currentGatingTarget = feature;
+  
+  const overlay = document.getElementById('gating-overlay');
+  if (!overlay) return;
+  
+  const title = document.getElementById('gating-title-text');
+  const desc = document.getElementById('gating-desc-text');
+  
+  if (feature === 'model_comparison') {
+    title.textContent = 'Developer Pro Locked';
+    desc.textContent = 'The Model Side-by-Side Comparison Workspace is a premium Developer Pro feature. Upgrade now to unlock precision model matchups.';
+  } else if (feature === 'trigger_pipeline') {
+    title.textContent = 'Developer Pro Locked';
+    desc.textContent = 'Triggering retraining pipelines on GPU nodes requires Developer Pro authorization. Upgrade to control builds manually.';
+  } else if (feature === 'alert_webhooks') {
+    title.textContent = 'Enterprise Hub Locked';
+    desc.textContent = 'Custom Slack alarm webhook dispatches are restricted to Enterprise Hub licenses. Upgrade to unlock autonomous alert routing.';
+  } else {
+    title.textContent = 'Feature Restricted';
+    desc.textContent = 'This operation requires a subscription upgrade. Choose a plan to unlock.';
+  }
+  
+  overlay.classList.add('active');
+}
+
+function closeGatingModal() {
+  const overlay = document.getElementById('gating-overlay');
+  if (overlay) overlay.classList.remove('active');
+  currentGatingTarget = null;
+}
+
+function handleSimulateUpgrade() {
+  if (!currentUser) {
+    closeGatingModal();
+    openAuthModal();
+    showToast("Please sign in to select subscription upgrades.", "warn");
+    return;
+  }
+  
+  let targetTier = TIERS.PRO;
+  if (currentGatingTarget === 'alert_webhooks') {
+    targetTier = TIERS.ENTERPRISE;
+  }
+  
+  upgradeUserTier(currentUser, targetTier);
+  closeGatingModal();
+  showToast(`Successfully upgraded account to ${TIER_DETAILS[targetTier].name}! Feature unlocked.`, "success");
 }
 
 // Toast System

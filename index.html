@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MLOps Nexus | Enterprise AI Control Center</title>
   <meta name="description" content="Deploy, monitor, and scale enterprise machine learning models with real-time performance tracking and autonomous retraining pipelines.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Ottoman+Siyaq&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/assets/style.css">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,8 +40,12 @@
         <a href="#features" class="landing-nav-link">Features</a>
         <a href="#code" class="landing-nav-link">Developer API</a>
         <a href="#security" class="landing-nav-link">Enterprise Hub</a>
+        <a href="#pricing" class="landing-nav-link">Pricing</a>
       </div>
-      <div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="btn-secondary" id="btn-nav-auth" style="padding: 8px 18px; border-color: rgba(255, 255, 255, 0.1);">
+          <span>Sign In</span>
+        </button>
         <button class="btn-primary" id="btn-nav-launch" style="padding: 8px 18px;">
           <span>Launch Console</span>
           <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
@@ -227,7 +234,7 @@ print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</spa
       </div>
     </section>
 
-    <!-- High-Contrast Segment section -->
+    <!-- Dark Infrastructure Segment & Animated Scrolling Tag Marquee Backdrop -->
     <section class="contrast-section" id="security">
       <div class="contrast-container">
         <div class="contrast-badge">Enterprise Standards</div>
@@ -235,22 +242,168 @@ print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</spa
         
         <div class="contrast-grid">
           <div class="contrast-card">
-            <i data-lucide="server" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <i data-lucide="server" style="width: 24px; height: 24px; color: #818cf8;"></i>
             <h3>High-Performance Edge</h3>
             <p>Ensure sub-20ms inference response times globally. Model outputs are routed via low-latency server networks.</p>
           </div>
           
           <div class="contrast-card">
-            <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <i data-lucide="shield-check" style="width: 24px; height: 24px; color: #818cf8;"></i>
             <h3>Zero-Trust Model Registry</h3>
             <p>Implement secure artifact locks. Restrict staging transitions and enforce code authorizations using RBAC policies.</p>
           </div>
           
           <div class="contrast-card">
-            <i data-lucide="gauge" style="width: 24px; height: 24px; color: #4f46e5;"></i>
+            <i data-lucide="gauge" style="width: 24px; height: 24px; color: #818cf8;"></i>
             <h3>Continuous Telemetry</h3>
             <p>Monitor cluster CPU limits, GPU temperature loads, and memory pools through unified corporate streams.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Tag Cloud Animated Marquee Overlay (Baseten/Modal style) -->
+      <div class="marquee-container">
+        <div class="marquee-title-layer">
+          <h3 class="marquee-headline">Scalable Platform</h3>
+          <div class="marquee-subheadline">The Developer Platform for Modern APIs</div>
+        </div>
+
+        <!-- Row 1: Scrolling Left -->
+        <div class="marquee-row">
+          <div class="marquee-track">
+            <span class="tag-pill tag-blue">Transformers</span>
+            <span class="tag-pill tag-green">Rate Limit</span>
+            <span class="tag-pill tag-pink">Throttling</span>
+            <span class="tag-pill tag-purple">Auth Tokens</span>
+            <span class="tag-pill tag-cyan">API Keys</span>
+            <span class="tag-pill tag-yellow">Validation</span>
+            <span class="tag-pill tag-red">Gateway</span>
+            <span class="tag-pill tag-blue">Key Rotation</span>
+            <span class="tag-pill tag-green">Revocation</span>
+            <span class="tag-pill tag-pink">Encryption</span>
+            <span class="tag-pill tag-purple">Audit Log</span>
+            <span class="tag-pill tag-cyan">Metadata</span>
+            <!-- Duplicate for seamless infinite scroll -->
+            <span class="tag-pill tag-blue">Transformers</span>
+            <span class="tag-pill tag-green">Rate Limit</span>
+            <span class="tag-pill tag-pink">Throttling</span>
+            <span class="tag-pill tag-purple">Auth Tokens</span>
+            <span class="tag-pill tag-cyan">API Keys</span>
+            <span class="tag-pill tag-yellow">Validation</span>
+            <span class="tag-pill tag-red">Gateway</span>
+            <span class="tag-pill tag-blue">Key Rotation</span>
+            <span class="tag-pill tag-green">Revocation</span>
+            <span class="tag-pill tag-pink">Encryption</span>
+            <span class="tag-pill tag-purple">Audit Log</span>
+            <span class="tag-pill tag-cyan">Metadata</span>
+          </div>
+        </div>
+
+        <!-- Row 2: Scrolling Right -->
+        <div class="marquee-row">
+          <div class="marquee-track">
+            <span class="tag-pill tag-purple">Decryption</span>
+            <span class="tag-pill tag-yellow">Permissions</span>
+            <span class="tag-pill tag-cyan">Scopes</span>
+            <span class="tag-pill tag-red">Subscriptions</span>
+            <span class="tag-pill tag-green">Auto-Scale</span>
+            <span class="tag-pill tag-blue">Data Ingestion</span>
+            <span class="tag-pill tag-pink">Data Drift</span>
+            <span class="tag-pill tag-purple">Anomaly Detection</span>
+            <span class="tag-pill tag-yellow">Model Locks</span>
+            <span class="tag-pill tag-cyan">Hyperparameters</span>
+            <span class="tag-pill tag-green">GPU Clusters</span>
+            <!-- Duplicate -->
+            <span class="tag-pill tag-purple">Decryption</span>
+            <span class="tag-pill tag-yellow">Permissions</span>
+            <span class="tag-pill tag-cyan">Scopes</span>
+            <span class="tag-pill tag-red">Subscriptions</span>
+            <span class="tag-pill tag-green">Auto-Scale</span>
+            <span class="tag-pill tag-blue">Data Ingestion</span>
+            <span class="tag-pill tag-pink">Data Drift</span>
+            <span class="tag-pill tag-purple">Anomaly Detection</span>
+            <span class="tag-pill tag-yellow">Model Locks</span>
+            <span class="tag-pill tag-cyan">Hyperparameters</span>
+            <span class="tag-pill tag-green">GPU Clusters</span>
+          </div>
+        </div>
+
+        <!-- Row 3: Scrolling Left -->
+        <div class="marquee-row">
+          <div class="marquee-track">
+            <span class="tag-pill tag-pink">XGBoost</span>
+            <span class="tag-pill tag-blue">PyTorch</span>
+            <span class="tag-pill tag-green">TensorFlow</span>
+            <span class="tag-pill tag-purple">Scikit-Learn</span>
+            <span class="tag-pill tag-cyan">Kaggle Datasets</span>
+            <span class="tag-pill tag-yellow">Telemetry Streams</span>
+            <span class="tag-pill tag-red">Alert Webhooks</span>
+            <span class="tag-pill tag-blue">Inference Engine</span>
+            <span class="tag-pill tag-green">Distributed Training</span>
+            <!-- Duplicate -->
+            <span class="tag-pill tag-pink">XGBoost</span>
+            <span class="tag-pill tag-blue">PyTorch</span>
+            <span class="tag-pill tag-green">TensorFlow</span>
+            <span class="tag-pill tag-purple">Scikit-Learn</span>
+            <span class="tag-pill tag-cyan">Kaggle Datasets</span>
+            <span class="tag-pill tag-yellow">Telemetry Streams</span>
+            <span class="tag-pill tag-red">Alert Webhooks</span>
+            <span class="tag-pill tag-blue">Inference Engine</span>
+            <span class="tag-pill tag-green">Distributed Training</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+      <h2 class="pricing-title">Flexible Plans for <span>Scale Operations</span></h2>
+      <p class="pricing-subtitle">Select the control tier matching your pipeline throughput. Instantly simulate or link active Firebase credentials to get started.</p>
+      
+      <div class="pricing-grid">
+        <!-- Free Tier Card -->
+        <div class="pricing-card" id="pricing-card-free">
+          <div class="pricing-name">Free Starter</div>
+          <div class="pricing-price">$0<span>/ month</span></div>
+          <p class="pricing-desc">Perfect for evaluation and testing. Monitor baseline telemetry and explore registry models.</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check"></i><span>1 Active Deployment</span></li>
+            <li><i data-lucide="check"></i><span>Core Telemetry Dashboard</span></li>
+            <li><i data-lucide="check"></i><span>Data Drift PSI Alerts</span></li>
+            <li style="color: var(--text-muted);"><i data-lucide="x" style="color: var(--text-muted);"></i><span>No Model registry upgrades</span></li>
+            <li style="color: var(--text-muted);"><i data-lucide="x" style="color: var(--text-muted);"></i><span>No Pipeline triggers</span></li>
+          </ul>
+          <button class="pricing-btn secondary btn-pricing-select" data-tier="free">Activate Free Starter</button>
+        </div>
+
+        <!-- Pro Tier Card -->
+        <div class="pricing-card popular" id="pricing-card-pro">
+          <div class="pricing-name">Developer Pro</div>
+          <div class="pricing-price">$49<span>/ month</span></div>
+          <p class="pricing-desc">For active MLOps engineers. Side-by-side metric comparisons and custom pipelines control.</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check"></i><span>Up to 15 Active Deployments</span></li>
+            <li><i data-lucide="check"></i><span>Model Comparison Workspace</span></li>
+            <li><i data-lucide="check"></i><span>Manual Pipeline Retraining Triggers</span></li>
+            <li><i data-lucide="check"></i><span>API Credentials custom stores</span></li>
+            <li style="color: var(--text-muted);"><i data-lucide="x" style="color: var(--text-muted);"></i><span>No Slack Webhook custom triggers</span></li>
+          </ul>
+          <button class="pricing-btn primary btn-pricing-select" data-tier="pro">Upgrade to Pro</button>
+        </div>
+
+        <!-- Enterprise Tier Card -->
+        <div class="pricing-card" id="pricing-card-enterprise">
+          <div class="pricing-name">Enterprise Hub</div>
+          <div class="pricing-price">$199<span>/ month</span></div>
+          <p class="pricing-desc">Full autonomous cycle operations with instant webhook dispatches and private nodes.</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check"></i><span>Unlimited Deployments</span></li>
+            <li><i data-lucide="check"></i><span>Model registry locks and staging gates</span></li>
+            <li><i data-lucide="check"></i><span>Slack alerts webhook integrations</span></li>
+            <li><i data-lucide="check"></i><span>Dedicated cluster scaling telemetry</span></li>
+            <li><i data-lucide="check"></i><span>24/7 MLOps support channels</span></li>
+          </ul>
+          <button class="pricing-btn secondary btn-pricing-select" data-tier="enterprise">Deploy Enterprise Hub</button>
         </div>
       </div>
     </section>
@@ -703,6 +856,26 @@ print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</spa
               </div>
             </div>
 
+            <div class="settings-group">
+              <div class="settings-group-title">Firebase Auth & Database Settings</div>
+              <div class="settings-group-desc">Enter your Firebase Web App credentials to connect to a live Firebase instance. Leave blank to run in simulated mode.</div>
+              
+              <div class="settings-input-row">
+                <label for="settings-fb-api-key">Firebase API Key</label>
+                <input type="text" class="settings-input" id="settings-fb-api-key" placeholder="AIzaSyA1..." />
+              </div>
+              
+              <div class="settings-input-row">
+                <label for="settings-fb-auth-domain">Auth Domain</label>
+                <input type="text" class="settings-input" id="settings-fb-auth-domain" placeholder="your-project.firebaseapp.com" />
+              </div>
+
+              <div class="settings-input-row">
+                <label for="settings-fb-project-id">Project ID</label>
+                <input type="text" class="settings-input" id="settings-fb-project-id" placeholder="your-project-id" />
+              </div>
+            </div>
+
             <div class="settings-actions">
               <button class="btn-primary" id="settings-save-btn" style="padding: 12px 28px;">
                 <i data-lucide="save"></i>
@@ -774,6 +947,81 @@ print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</spa
     <div class="drawer-footer">
       <button class="btn-primary" style="flex-grow: 1;" id="drawer-btn-promote">Promote Stage</button>
       <button class="btn-secondary" style="flex-grow: 1;" id="drawer-btn-archive">Archive</button>
+    </div>
+  </div>
+
+  <!-- Auth Modal Overlay -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-modal">
+      <div class="auth-close" id="auth-close-btn"><i data-lucide="x"></i></div>
+      
+      <div id="auth-view-signin">
+        <h3 class="auth-title">Welcome back</h3>
+        <p class="auth-subtitle">Sign in to access your MLOps control center.</p>
+        
+        <div class="auth-error" id="auth-error-signin">Error message</div>
+        
+        <div class="auth-form-group">
+          <label for="signin-email">Corporate Email</label>
+          <input type="email" class="auth-input" id="signin-email" placeholder="sarah.connor@nexus.ml" />
+        </div>
+        
+        <div class="auth-form-group">
+          <label for="signin-password">Password</label>
+          <input type="password" class="auth-input" id="signin-password" placeholder="••••••••" />
+        </div>
+        
+        <button class="auth-submit-btn" id="btn-signin-submit">Sign In to Dashboard</button>
+        
+        <div class="auth-switch">
+          Don't have an account? <span class="auth-switch-link" id="link-to-signup">Sign Up</span>
+        </div>
+      </div>
+      
+      <div id="auth-view-signup" style="display: none;">
+        <h3 class="auth-title">Create account</h3>
+        <p class="auth-subtitle">Start monitoring and scaling models today.</p>
+        
+        <div class="auth-error" id="auth-error-signup">Error message</div>
+        
+        <div class="auth-form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" class="auth-input" id="signup-name" placeholder="Sarah Connor" />
+        </div>
+
+        <div class="auth-form-group">
+          <label for="signup-email">Corporate Email</label>
+          <input type="email" class="auth-input" id="signup-email" placeholder="sarah.connor@nexus.ml" />
+        </div>
+        
+        <div class="auth-form-group">
+          <label for="signup-password">Password (min 6 chars)</label>
+          <input type="password" class="auth-input" id="signup-password" placeholder="••••••••" />
+        </div>
+        
+        <button class="auth-submit-btn" id="btn-signup-submit">Register and Launch</button>
+        
+        <div class="auth-switch">
+          Already have an account? <span class="auth-switch-link" id="link-to-signin">Sign In</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscription Gating Overlay Lock -->
+  <div class="gating-overlay" id="gating-overlay">
+    <div class="gating-card">
+      <div class="gating-close" id="gating-close-btn"><i data-lucide="x"></i></div>
+      <div class="gating-icon">
+        <i data-lucide="lock" style="width: 32px; height: 32px;"></i>
+      </div>
+      <h3 class="gating-title" id="gating-title-text">Upgrade Needed</h3>
+      <p class="gating-desc" id="gating-desc-text">This advanced feature requires a higher tier subscription. Choose a plan to unlock this tab.</p>
+      
+      <div class="gating-actions">
+        <button class="btn-secondary" style="flex: 1;" id="gating-btn-cancel">Close</button>
+        <button class="btn-primary" style="flex: 1;" id="gating-btn-upgrade">Simulate Upgrade</button>
+      </div>
     </div>
   </div>
 

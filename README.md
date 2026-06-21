@@ -1,6 +1,6 @@
-# MLOps Nexus | Enterprise ML Control Center
+# Aether AI | Autonomous ML Operations Hub
 
-MLOps Nexus is a premium, corporate-grade operations dashboard and landing page designed for monitoring and managing the lifecycle of machine learning models in production environments. Built with modern, high-performance modular Javascript and styled with a clean Vercel-inspired dark theme, it balances next-gen visuals with strict corporate utility.
+Aether AI is a premium, corporate-grade operations dashboard and landing page designed for monitoring and managing the lifecycle of machine learning models in production environments. Built with modern, high-performance modular Javascript and styled with a clean Vercel-inspired dark theme, it balances next-gen visuals with strict corporate utility.
 
 ---
 
@@ -11,6 +11,7 @@ MLOps Nexus is a premium, corporate-grade operations dashboard and landing page 
 * **Model Registry**: High-density registry managing model stages (Production, Staging, Archive), version rollouts, hyperparameter maps, and promotion gates.
 * **Data Drift Guard**: Monitoring changes in data profiles using the **Population Stability Index (PSI)** to trigger alerts and automate retraining.
 * **Simulated Telemetry**: Background tasks feeding live updates on GPU memory utilization, CPU thresholds, cluster temperatures, and API throughput.
+* **Subscription Management**: In-console billing tab to manage access tiers (Free, Developer Pro, Enterprise Hub) and monitor deployments quotas.
 
 ---
 
@@ -33,6 +34,7 @@ To maintain clinical and professional accuracy, the dashboard metrics and logs a
 ├── index.html                   # Main entry point (loads src/main.js)
 ├── package.json                 # Project configuration and scripting
 ├── README.md                    # Corporate-grade documentation
+├── vercel.json                  # Vercel static serving configuration
 └── src/
     ├── main.js                  # App router, event wiring, and transitions
     ├── assets/
@@ -42,6 +44,8 @@ To maintain clinical and professional accuracy, the dashboard metrics and logs a
     │   ├── fraud_dataset.js     # Fraud Detection statistics
     │   └── models_state.js      # Global models state registry
     └── services/
+        ├── auth_service.js      # Firebase Authentication service integration
+        ├── subscription_service.js # User subscription tiered gating control
         ├── charts_service.js    # Data visualization configurations (Chart.js)
         └── simulator_service.js # Live background telemetry & logs simulator
 ```
