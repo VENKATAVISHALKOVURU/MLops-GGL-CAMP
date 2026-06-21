@@ -19,8 +19,6 @@ const btnNavLaunch = document.getElementById('btn-nav-launch');
 const btnHeroLaunch = document.getElementById('btn-hero-launch');
 const btnLandingExplore = document.getElementById('btn-landing-explore');
 
-// Dashboard Return Button
-const btnReturnLanding = document.getElementById('btn-return-landing');
 
 // UI Elements
 const sidebarLinks = document.querySelectorAll('.nav-link');
@@ -140,8 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnHeroLaunch) btnHeroLaunch.addEventListener('click', () => handleLaunchRequest('overview'));
   if (btnLandingExplore) btnLandingExplore.addEventListener('click', () => handleLaunchRequest('models'));
   
-  // Transition actions: Dashboard -> Landing Page
-  if (btnReturnLanding) btnReturnLanding.addEventListener('click', returnToLanding);
   
   // Code Tabs Switcher on Landing Page
   initCodeTabs();
@@ -997,6 +993,13 @@ function onUserChanged(user) {
       // Default anonymous initials
       userAvatarEl.src = 'https://ui-avatars.com/api/?name=Guest&background=1e293b&color=94a3b8';
     }
+    
+    // Automatically drop user back to landing page if they log out inside console
+    const dashboardApp = document.getElementById('dashboard-app');
+    if (dashboardApp && dashboardApp.classList.contains('active')) {
+      returnToLanding();
+    }
+    
     syncPricingUI('free');
   }
 }
