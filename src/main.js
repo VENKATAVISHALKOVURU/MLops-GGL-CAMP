@@ -966,6 +966,7 @@ function onUserChanged(user) {
   const authNavBtn = document.getElementById('btn-nav-auth');
   const userNameEl = document.querySelector('.user-name');
   const userRoleEl = document.querySelector('.user-role');
+  const userAvatarEl = document.querySelector('.user-avatar');
   
   const tier = getUserTier(user);
   
@@ -975,13 +976,27 @@ function onUserChanged(user) {
       userNameEl.innerHTML = `${user.displayName} <span class="user-tier-badge ${tier}">${tier}</span>`;
     }
     if (userRoleEl) userRoleEl.textContent = user.email;
+    
+    // Dynamic avatar from Firebase photoURL or custom initials placeholder
+    if (userAvatarEl) {
+      if (user.photoURL) {
+        userAvatarEl.src = user.photoURL;
+      } else {
+        userAvatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=6366f1&color=fff&bold=true`;
+      }
+    }
     syncPricingUI(tier);
   } else {
     if (authNavBtn) authNavBtn.innerHTML = '<span>Sign In</span>';
     if (userNameEl) {
-      userNameEl.innerHTML = `Sarah Connor <span class="user-tier-badge free">free</span>`;
+      userNameEl.innerHTML = `Guest User <span class="user-tier-badge free">free</span>`;
     }
-    if (userRoleEl) userRoleEl.textContent = 'sarah.connor@mlopsnexus.com';
+    if (userRoleEl) userRoleEl.textContent = 'guest@mlopsnexus.com';
+    
+    if (userAvatarEl) {
+      // Default anonymous initials
+      userAvatarEl.src = 'https://ui-avatars.com/api/?name=Guest&background=1e293b&color=94a3b8';
+    }
     syncPricingUI('free');
   }
 }
