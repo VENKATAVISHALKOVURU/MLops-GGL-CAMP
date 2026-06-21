@@ -283,7 +283,7 @@ input, select {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 100px 40px 60px 40px;
+  padding: 80px 40px 30px 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -430,7 +430,7 @@ input, select {
 
 /* Landing Interactive Code Container */
 .code-interactive-section {
-  padding: 80px 0;
+  padding: 40px 0;
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -521,7 +521,7 @@ input, select {
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 100px 40px;
+  padding: 60px 40px;
 }
 
 .split-showcase.reverse {
@@ -595,7 +595,7 @@ input, select {
 .contrast-section {
   background-color: var(--bg-main);
   color: var(--text-main);
-  padding: 100px 40px;
+  padding: 60px 40px;
   border-bottom: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
@@ -763,7 +763,7 @@ input, select {
 
 /* Pricing Grid (Tiered Subscriptions on Landing) */
 .pricing-section {
-  padding: 100px 40px;
+  padding: 60px 40px;
   border-bottom: 1px solid var(--border-color);
   max-width: 1200px;
   margin: 0 auto;
@@ -1455,7 +1455,7 @@ input, select {
 /* Metric Cards */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
 }
@@ -1464,7 +1464,7 @@ input, select {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -1557,7 +1557,7 @@ input, select {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: var(--shadow-sm);
@@ -1580,7 +1580,8 @@ input, select {
 .chart-container {
   position: relative;
   width: 100%;
-  height: 280px;
+  flex-grow: 1;
+  min-height: 280px;
 }
 
 /* Pipeline Status / Activity List */
@@ -2216,7 +2217,7 @@ td {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 32px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--border-color);
 }
 
