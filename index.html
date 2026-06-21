@@ -505,45 +505,49 @@ print(<span style="color: #10b981;">f"Deployment online: {deploy.endpoint}"</spa
         <!-- Tab 1: Overview -->
         <section class="tab-pane active" id="overview-pane">
           <div class="metrics-grid">
-            <div class="metric-card">
+            <div class="metric-card" id="card-deployments">
               <div class="metric-header">
                 <span>Active Deployments</span>
                 <i data-lucide="server" class="trend-up"></i>
               </div>
               <div class="metric-value" id="metric-active-deployments">14</div>
+              <canvas class="sparkline" id="sparkline-deployments" height="40" style="display: block; width: 100%; height: 40px; margin-top: 12px; pointer-events: none;"></canvas>
               <div class="metric-footer">
                 <span class="trend-up"><i data-lucide="arrow-up-right"></i> +2 this week</span>
               </div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-card" id="card-latency">
               <div class="metric-header">
                 <span>Avg Inference Latency</span>
                 <i data-lucide="clock" class="trend-down"></i>
               </div>
               <div class="metric-value" id="metric-latency">18.4 ms</div>
+              <canvas class="sparkline" id="sparkline-latency" height="40" style="display: block; width: 100%; height: 40px; margin-top: 12px; pointer-events: none;"></canvas>
               <div class="metric-footer">
                 <span class="trend-up"><i data-lucide="arrow-down-right"></i> -1.2ms improvement</span>
               </div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-card" id="card-gpu">
               <div class="metric-header">
                 <span>GPU Cluster Load</span>
                 <i data-lucide="zap" class="trend-neutral"></i>
               </div>
               <div class="metric-value" id="metric-gpu-load">64.2%</div>
+              <canvas class="sparkline" id="sparkline-gpu" height="40" style="display: block; width: 100%; height: 40px; margin-top: 12px; pointer-events: none;"></canvas>
               <div class="metric-footer">
                 <span class="trend-neutral">24/32 nodes active</span>
               </div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-card" id="card-ips">
               <div class="metric-header">
                 <span>Inferences/Sec</span>
                 <i data-lucide="database" class="trend-up"></i>
               </div>
               <div class="metric-value" id="metric-ips">1,402</div>
+              <canvas class="sparkline" id="sparkline-ips" height="40" style="display: block; width: 100%; height: 40px; margin-top: 12px; pointer-events: none;"></canvas>
               <div class="metric-footer">
                 <span class="trend-up"><i data-lucide="arrow-up-right"></i> +8.4% hourly peak</span>
               </div>

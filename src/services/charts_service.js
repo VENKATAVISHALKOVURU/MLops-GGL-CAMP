@@ -1,4 +1,5 @@
 import { churnDataset } from '../data/churn_dataset.js';
+import { state } from '../data/models_state.js';
 
 // Global Chart Instances
 export let charts = {
@@ -130,6 +131,14 @@ export function initCharts() {
       }
     }
   });
+
+  // Render initial card sparklines
+  if (state && state.metricsHistory) {
+    drawSparkline('sparkline-deployments', state.metricsHistory.deployments, 'rgba(16, 185, 129, 1)'); // Success / Emerald
+    drawSparkline('sparkline-latency', state.metricsHistory.latency, 'rgba(139, 92, 246, 1)'); // Violet / Purple
+    drawSparkline('sparkline-gpu', state.metricsHistory.gpu, 'rgba(245, 158, 11, 1)'); // Warning / Amber
+    drawSparkline('sparkline-ips', state.metricsHistory.ips, 'rgba(6, 182, 212, 1)'); // Cyan
+  }
 }
 
 // Update Drawer Inspection Performance History Chart
@@ -307,3 +316,69 @@ export function renderTelemetryCharts() {
     options: commonOptions
   });
 }
+
+// Render dynamic canvas sparklines
+export function drawSparkline(canvasId, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  
+  // Set display size
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  ctx.scale(dpr, dpr);
+  
+  const width = rect.width;
+  const height = rect.height;
+  
+  ctx.clearRect(0, 0, width, height);
+  
+  if (data.length < 2) return;
+  
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min === 0 ? 1 : max - min;
+  
+  ctx.beginPath();
+  
+  // Map points to canvas coordinates
+  const points = data.map((val, index) => {
+    const x = (index / (data.length - 1)) * width;
+    // Leave padding top and bottom
+    const y = 6 + (1 - (val - min) / range) * (height - 12);
+    return { x, y };
+  });
+  
+  ctx.moveTo(points[0].x, points[0].y);
+  
+  // Draw curve using quadratic curves for smoothness
+  for (let i = 0; i < points.length - 1; i++) {
+    const xc = (points[i].x + points[i + 1].x) / 2;
+    const yc = (points[i].y + points[i + 1].y) / 2;
+    ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+  }
+  ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+  
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  
+  // Create gradient fill underneath
+  ctx.lineTo(width, height);
+  ctx.lineTo(0, height);
+  ctx.closePath();
+  
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, color.replace(')', ', 0.15)'));
+  gradient.addColorStop(1, color.replace(')', ', 0)'));
+  ctx.fillStyle = gradient;
+  ctx.fill();
+}
+

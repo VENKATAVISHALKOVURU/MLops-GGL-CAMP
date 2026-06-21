@@ -2477,3 +2477,47 @@ td {
   color: var(--text-muted);
   font-size: 0.8rem;
 }
+
+/* Premium Card Radial Hover Glows */
+.metric-card, .card {
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::after, .card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(6, 182, 212, 0.04),
+    rgba(99, 102, 241, 0.04) 50%,
+    transparent 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.metric-card:hover::after, .card:hover::after {
+  opacity: 1;
+}
+
+/* Ensure child content sits above the absolute hover gradient overlay */
+.metric-card > *, .card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Canvas Sparkline positioning */
+.metric-card .sparkline {
+  position: relative;
+  z-index: 2;
+  margin-top: 10px;
+  filter: drop-shadow(0 2px 8px rgba(6, 182, 212, 0.15));
+}
+

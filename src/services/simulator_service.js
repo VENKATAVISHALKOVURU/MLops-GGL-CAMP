@@ -1,4 +1,4 @@
-import { charts } from './charts_service.js';
+import { charts, drawSparkline } from './charts_service.js';
 import { state, showToast, renderModelsTable, renderActivityList } from '../main.js';
 
 let telemetryInterval = null;
@@ -156,6 +156,24 @@ function updateDynamicMetrics() {
     loadDataset.push(Math.floor(9500 + Math.random() * 2000));
     
     charts.serverLoad.update('none');
+  }
+
+  // 3. Update Card Sparklines
+  if (state && state.metricsHistory) {
+    state.metricsHistory.latency.shift();
+    state.metricsHistory.latency.push(parseFloat(currentLatency));
+    drawSparkline('sparkline-latency', state.metricsHistory.latency, 'rgba(139, 92, 246, 1)');
+    
+    state.metricsHistory.gpu.shift();
+    state.metricsHistory.gpu.push(parseFloat(currentGpu));
+    drawSparkline('sparkline-gpu', state.metricsHistory.gpu, 'rgba(245, 158, 11, 1)');
+    
+    state.metricsHistory.ips.shift();
+    state.metricsHistory.ips.push(currentIps);
+    drawSparkline('sparkline-ips', state.metricsHistory.ips, 'rgba(6, 182, 212, 1)');
+    
+    // Deployments doesn't fluctuate constantly, but redraw to prevent resize/scaling issues
+    drawSparkline('sparkline-deployments', state.metricsHistory.deployments, 'rgba(16, 185, 129, 1)');
   }
 }
 

@@ -83,5 +83,11 @@ export const state = {
     { id: 3, name: "Anomaly-Detection-AutoEncoder", type: "Failed Build", status: "failed", time: "2 hours ago", meta: "Out of Memory on GPU node-4" },
     { id: 4, name: "Bank-Churn-XGBoost", type: "System Alert", status: "failed", time: "4 hours ago", meta: "Inference drift threshold exceeded (Age PSI: 0.28)" }
   ],
+  metricsHistory: {
+    deployments: [10, 11, 11, 12, 12, 13, 14],
+    latency: [21.4, 20.8, 22.1, 19.5, 18.2, 19.0, 18.7, 18.9, 17.5, 18.1, 18.6, 18.4],
+    gpu: [72, 70, 75, 78, 82, 85, 80, 77, 72, 70],
+    ips: [1200, 1280, 1150, 1310, 1400, 1390, 1420, 1380, 1450, 1410, 1390, 1402]
+  },
   isConsoleInitialized: false
 };
