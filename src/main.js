@@ -122,15 +122,23 @@ console.log(<span style="color: #10b981;">\`Endpoint online: \${deployment.url}\
   }
 };
 
+function handleLaunchRequest(targetTab = 'overview') {
+  if (currentUser) {
+    launchConsole(targetTab);
+  } else {
+    openAuthPage(targetTab);
+  }
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
   // Init lucide icons
   lucide.createIcons();
   
   // Transition actions: Landing -> Dashboard Console
-  if (btnNavLaunch) btnNavLaunch.addEventListener('click', () => launchConsole('overview'));
-  if (btnHeroLaunch) btnHeroLaunch.addEventListener('click', () => launchConsole('overview'));
-  if (btnLandingExplore) btnLandingExplore.addEventListener('click', () => launchConsole('models'));
+  if (btnNavLaunch) btnNavLaunch.addEventListener('click', () => handleLaunchRequest('overview'));
+  if (btnHeroLaunch) btnHeroLaunch.addEventListener('click', () => handleLaunchRequest('overview'));
+  if (btnLandingExplore) btnLandingExplore.addEventListener('click', () => handleLaunchRequest('models'));
   
   // Transition actions: Dashboard -> Landing Page
   if (btnReturnLanding) btnReturnLanding.addEventListener('click', returnToLanding);
@@ -227,14 +235,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentUser) {
         logout().then(() => showToast("Logged out successfully.", "info"));
       } else {
-        openAuthModal();
+        openAuthPage();
       }
     });
   }
 
-  // Auth Modal internal actions
+  // Auth Page internal actions
   const authClose = document.getElementById('auth-close-btn');
-  if (authClose) authClose.addEventListener('click', closeAuthModal);
+  if (authClose) authClose.addEventListener('click', closeAuthPage);
+
+  const authBackBtn = document.getElementById('auth-back-btn');
+  if (authBackBtn) authBackBtn.addEventListener('click', closeAuthPage);
   
   const linkToSignup = document.getElementById('link-to-signup');
   const linkToSignin = document.getElementById('link-to-signin');
@@ -826,19 +837,31 @@ function saveSystemConfig() {
 }
 
 // --- Auth and Gating Helper Actions ---
-function openAuthModal() {
-  const overlay = document.getElementById('auth-overlay');
-  if (overlay) {
-    overlay.classList.add('active');
+function openAuthPage(targetTab = 'overview') {
+  const landingPage = document.getElementById('landing-page');
+  const dashboardApp = document.getElementById('dashboard-app');
+  const authPage = document.getElementById('auth-page');
+  
+  if (landingPage) landingPage.classList.add('hidden');
+  if (dashboardApp) dashboardApp.classList.remove('active');
+  
+  if (authPage) {
+    authPage.setAttribute('data-target-tab', targetTab);
+    authPage.classList.add('active');
     document.getElementById('auth-view-signin').style.display = 'block';
     document.getElementById('auth-view-signup').style.display = 'none';
     clearAuthErrors();
   }
 }
 
-function closeAuthModal() {
-  const overlay = document.getElementById('auth-overlay');
-  if (overlay) overlay.classList.remove('active');
+function closeAuthPage() {
+  const authPage = document.getElementById('auth-page');
+  if (authPage) {
+    authPage.classList.remove('active');
+    authPage.removeAttribute('data-target-tab');
+  }
+  const landingPage = document.getElementById('landing-page');
+  if (landingPage) landingPage.classList.remove('hidden');
 }
 
 function clearAuthErrors() {
@@ -861,9 +884,11 @@ function handleSignin() {
   
   signIn(email, password)
     .then((user) => {
-      closeAuthModal();
+      const authPage = document.getElementById('auth-page');
+      const targetTab = authPage ? (authPage.getAttribute('data-target-tab') || 'overview') : 'overview';
+      closeAuthPage();
       showToast(`Welcome back, ${user.displayName}!`, "success");
-      launchConsole('overview');
+      launchConsole(targetTab);
     })
     .catch((err) => {
       errorEl.textContent = getAuthErrorMessage(err.message);
@@ -885,9 +910,11 @@ function handleSignup() {
   
   signUp(email, password, name)
     .then((user) => {
-      closeAuthModal();
+      const authPage = document.getElementById('auth-page');
+      const targetTab = authPage ? (authPage.getAttribute('data-target-tab') || 'overview') : 'overview';
+      closeAuthPage();
       showToast(`Account created. Welcome ${user.displayName}!`, "success");
-      launchConsole('overview');
+      launchConsole(targetTab);
     })
     .catch((err) => {
       errorEl.textContent = getAuthErrorMessage(err.message);
@@ -959,7 +986,7 @@ function syncPricingUI(activeTier) {
 
 function handlePricingSelect(targetTier) {
   if (!currentUser) {
-    openAuthModal();
+    openAuthPage();
     showToast("Please sign in or register to choose a plan.", "warn");
     return;
   }
@@ -1005,7 +1032,7 @@ function closeGatingModal() {
 function handleSimulateUpgrade() {
   if (!currentUser) {
     closeGatingModal();
-    openAuthModal();
+    openAuthPage();
     showToast("Please sign in to select subscription upgrades.", "warn");
     return;
   }

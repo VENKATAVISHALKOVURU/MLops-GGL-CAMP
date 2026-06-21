@@ -7,10 +7,20 @@ let isRealFirebase = false;
 const MOCK_USER_KEY = 'aether_mock_user';
 const FIREBASE_CONFIG_KEY = 'aether_firebase_config';
 
-// Load existing firebase config from localStorage
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyASMSghtZ7EyOzTfqNhJV8ro_x-1KkGFIo",
+  authDomain: "bootcamtdd.firebaseapp.com",
+  projectId: "bootcamtdd",
+  storageBucket: "bootcamtdd.firebasestorage.app",
+  messagingSenderId: "1020334269532",
+  appId: "1:1020334269532:web:0993b2735998c7fa88f299",
+  measurementId: "G-X8GZYX4YVE"
+};
+
+// Load existing firebase config from localStorage or fallback to default
 export function getSavedFirebaseConfig() {
   const saved = localStorage.getItem(FIREBASE_CONFIG_KEY);
-  return saved ? JSON.parse(saved) : null;
+  return saved ? JSON.parse(saved) : DEFAULT_FIREBASE_CONFIG;
 }
 
 export function saveFirebaseConfig(config) {
