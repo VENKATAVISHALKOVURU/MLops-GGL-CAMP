@@ -121,6 +121,39 @@ export async function signIn(email, password) {
   }
 }
 
+// Google Sign In Handler
+export async function signInWithGoogle() {
+  if (isRealFirebase && firebaseAuth) {
+    const { signInWithPopup, GoogleAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(firebaseAuth, provider);
+    const user = userCredential.user;
+    const tier = localStorage.getItem(`aether_tier_${user.uid}`) || 'free';
+    return {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName || user.email.split('@')[0],
+      tier
+    };
+  } else {
+    // Simulated Google Sign-in
+    const mockUser = {
+      uid: 'mock-google-' + Math.random().toString(36).substr(2, 9),
+      email: 'google.dev@nexus.ml',
+      displayName: 'Google Dev User',
+      tier: 'free'
+    };
+    const users = JSON.parse(localStorage.getItem('aether_mock_users') || '[]');
+    if (!users.find(u => u.email === mockUser.email)) {
+      users.push(mockUser);
+      localStorage.setItem('aether_mock_users', JSON.stringify(users));
+    }
+    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(mockUser));
+    triggerAuthListeners(mockUser);
+    return mockUser;
+  }
+}
+
 // Sign Out Handler
 export async function logout() {
   if (isRealFirebase && firebaseAuth) {

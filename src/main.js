@@ -1,7 +1,7 @@
 import { state } from './data/models_state.js';
 import { initCharts, updateDrawerChart, renderDriftCharts, renderTelemetryCharts } from './services/charts_service.js';
 import { startSimulator, stopTrainingRun, startTrainingRun } from './services/simulator_service.js';
-import { initFirebase, signIn, signUp, logout, checkAuthState, getSavedFirebaseConfig, saveFirebaseConfig } from './services/auth_service.js';
+import { initFirebase, signIn, signUp, signInWithGoogle, logout, checkAuthState, getSavedFirebaseConfig, saveFirebaseConfig } from './services/auth_service.js';
 import { getUserTier, isFeatureAllowed, upgradeUserTier, TIER_DETAILS, TIERS } from './services/subscription_service.js';
 
 // Export state for other services
@@ -268,6 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const btnSignupSubmit = document.getElementById('btn-signup-submit');
   if (btnSignupSubmit) btnSignupSubmit.addEventListener('click', handleSignup);
+
+  const btnSigninGoogle = document.getElementById('btn-signin-google');
+  if (btnSigninGoogle) btnSigninGoogle.addEventListener('click', handleGoogleSignIn);
+
+  const btnSignupGoogle = document.getElementById('btn-signup-google');
+  if (btnSignupGoogle) btnSignupGoogle.addEventListener('click', handleGoogleSignIn);
 
   // Pricing Buttons Wiring
   const pricingBtns = document.querySelectorAll('.btn-pricing-select');
@@ -919,6 +925,31 @@ function handleSignup() {
     .catch((err) => {
       errorEl.textContent = getAuthErrorMessage(err.message);
       errorEl.style.display = 'block';
+    });
+}
+
+function handleGoogleSignIn() {
+  const errorElIn = document.getElementById('auth-error-signin');
+  const errorElUp = document.getElementById('auth-error-signup');
+  
+  signInWithGoogle()
+    .then((user) => {
+      const authPage = document.getElementById('auth-page');
+      const targetTab = authPage ? (authPage.getAttribute('data-target-tab') || 'overview') : 'overview';
+      closeAuthPage();
+      showToast(`Welcome, ${user.displayName}! Signed in with Google.`, "success");
+      launchConsole(targetTab);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (errorElIn) {
+        errorElIn.textContent = "Google login failed: " + err.message;
+        errorElIn.style.display = 'block';
+      }
+      if (errorElUp) {
+        errorElUp.textContent = "Google login failed: " + err.message;
+        errorElUp.style.display = 'block';
+      }
     });
 }
 
